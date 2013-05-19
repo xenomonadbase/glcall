@@ -17,7 +17,7 @@ Install
 sudo make install
 installs files to /usr/local/bin/. and /etc/bash_completion.d/.
 
-Usage(setup)
+Usage(linux kernel example)
 ============
 
     $ cd linux
@@ -77,6 +77,6 @@ TODO
 
 License
 =======
-Copyright (c) https://github.com/xenomonadbase/glcall.git
-EPL-1.0
+* Copyright (c) https://github.com/xenomonadbase/glcall.git
+* EPL-1.0
 
