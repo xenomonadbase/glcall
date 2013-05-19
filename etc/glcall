@@ -1,0 +1,50 @@
+# global gtags bash completed function name caller callee explore
+# https://github.com/xenomonadbase/glcall.git
+
+__glcall()
+{
+    local opt fopt level
+    level=$1
+    fopt=$2
+    opt=("${@:3}")
+    fstr=${opt[$(($level+1))]}
+    if [ ${#opt[@]} -lt $(($level+1)) ] ;then
+        return 0
+    fi
+    glcall.py -l $level -f ${fstr:-"all"} $fopt ${opt[$level]}
+    __glcall $(($level+1)) $fopt ${opt[@]}
+}
+
+glcall()
+{
+    __glcall 0 $@
+}
+
+_glcall()
+{
+    local cur prev
+
+    COMPREPLY=()
+    _get_comp_words_by_ref cur prev
+
+    if [ $COMP_CWORD -eq 1 ]; then
+        COMPREPLY=( $( compgen -W "-x -r -sx -rx" -- "$cur" ) )
+    elif [ $COMP_CWORD -eq 2 ]; then
+        case $prev in
+            -x|-r|-sx|-rx)
+                COMPREPLY=( $(global -c $prev $cur) ) ;;
+            *)
+                ;;
+        esac
+    elif [ $prev == "nothing" ]; then
+	return 0
+    else
+	local opt=${COMP_WORDS[1]}
+	COMPREPLY=( $( compgen -W "$(glcall.py -f all -o $opt $prev)" -- "$cur") )
+    fi
+
+    return 0
+} &&
+complete -F _glcall -o default glcall
+
+

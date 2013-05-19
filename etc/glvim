@@ -1,0 +1,46 @@
+# global gtags bash completed function name caller callee explore
+# https://github.com/xenomonadbase/glcall.git
+
+glvim()
+{
+    local cur prev
+    _get_comp_words_by_ref cur prev
+    vim +$4 $3
+}
+
+_glvim()
+{
+    local cur prev
+
+    COMPREPLY=()
+    _get_comp_words_by_ref cur prev
+
+    case $COMP_CWORD in
+    1)
+        COMPREPLY=( $( compgen -W "-x -r -sx -rx" -- "$cur" ) ) ;;
+    2)
+        case $prev in
+            -x|-r|-sx|-rx)
+                COMPREPLY=( $(global -c $prev $cur) ) ;;
+            *)
+                ;;
+        esac
+        ;;
+    3)
+	local opt=${COMP_WORDS[1]}
+	local glcallret=$(global $opt $prev | awk '{print $3}' | uniq)
+	COMPREPLY=( $( compgen -W "$glcallret" -- "$cur") )
+    	;;
+    4)
+	local opt=${COMP_WORDS[1]}
+	local pprev=${COMP_WORDS[$(($COMP_CWORD-2))]}
+	local glcallret=$( global $opt $pprev | grep $prev | awk '{print $2}' )
+	COMPREPLY=( $( compgen -W "$glcallret" -- "$cur") )
+    	;;
+    esac
+
+    return 0
+} &&
+complete -F _glvim -o default glvim
+
+
