@@ -11,7 +11,8 @@ __glcall()
     if [ ${#opt[@]} -lt $(($level+1)) ] ;then
         return 0
     fi
-    glcall.py -l $level -f ${fstr:-"all"} $fopt ${opt[$level]}
+    #glcall.py -l $level -f ${fstr:-"all"} $fopt ${opt[$level]}
+    glcall.py -l $level -f all $fopt ${opt[$level]}
     __glcall $(($level+1)) $fopt ${opt[@]}
 }
 
